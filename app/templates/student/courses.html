@@ -1,0 +1,58 @@
+{%extends 'student/base.html' %}
+
+{% block content %}
+<div class="card"  id="big-table">
+    <div class="card-header" >
+        <h3>Courses</h3>
+    </div>
+    <div class="card-body">
+        <div class="container">
+        {% if courses %}
+            <h2>Enrolled courses</h2>
+            <table class="table" table id="myTable">
+                <thead>
+                  <tr>
+                    <th scope="col">Course Name</th>
+                    <th scope="col">Course <br> Description</th>
+                    <th scope="col">Course ID</th>
+                    <th scope="col">Action</th>
+                  </tr>
+                </thead>
+                <tbody>
+                    {% for course in courses %}
+                        <tr>
+                            <td>{{ course.title }}</td>
+                            <td>{{course.description}}</td>
+                            <td>{{course._id}}</td>
+                            <td>              
+                                <button class="enroll-button">Enroll</button>
+                                <span class="confirmation">
+                                    <form  method="POST" action="{{ url_for('main.courses') }}">
+                                            <span>Re-enter your email and course ID to confirm</span><br>
+                                            <label for="email">Email:</label><br>
+                                            <input type="email" id="email" name="email" size="32"><br>
+                                            <label for="email">Course ID:</label><br>
+                                            <input type="text" id="course_id" name="course_id" size="32"><br>
+                                            <button class="confirm" onclick="redirectToPage()">✓</button>
+                                            <button class="cancel-button">❌</button> 
+                                        
+                                    </form>
+                                </span>
+                            </td>
+                            
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>            
+        {% else %}
+            <p>No courses found</p>
+        {% endif %}
+    </div>
+</div>
+</div>
+<script>
+    function redirectToPage() {
+        window.location.href = "{{ url_for('main.dashboard') }}";
+    }
+  </script>
+{% endblock %}
