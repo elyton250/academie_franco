@@ -8,8 +8,10 @@ import urllib.parse
 import os
 from dotenv import load_dotenv
 from engine.v1.engine import uri
+from flask_cors import CORS
 app = Flask(__name__)
 app.config.from_object('config.Config')
+CORS(app)
     
 # uri = "mongodb://localhost:27017/edu_app"
 
