@@ -115,7 +115,7 @@ class User(UserMixin):
 
     def check_password(self, password):
         return check_password_hash(self.password_hash, password)
-
+ 
 # this the course model
 #
 #
@@ -129,12 +129,27 @@ class User(UserMixin):
 #
 #thr course model starts here
 class Course:
-    def __init__(self, id, title, description=None, instructor=None, modules=None):
-        self.id = id
+    def __init__(self, _id, title, description=None, instructor=None, modules=None, link=None, student_enrolled=[]):
+        self.id = _id
         self.title = title
         self.description = description
         self.instructor = instructor
         self.modules = modules
+        self.link = link
+        self.student_enrolled = student_enrolled
+        
+    def save(self):
+        course_doc = {
+            "_id": self.id,
+            "title": self.title,
+            "description": self.description,
+            "instructor": self.instructor,
+            "modules": self.modules,
+            "embed_link": self.link,
+            "student_enrolled": self.student_enrolled
+        }
+        mongo.courses.insert_one(course_doc)
+        return self
 
     @staticmethod
     def get_course(course_id):
@@ -203,16 +218,17 @@ class Course:
         return None
 
     @staticmethod
-    def create(title, description, instructor, lessons):
+    def create(title, description, instructor, lessons, link, student_enrolled=[]):
         _id = generate_courseID()
         course_doc = {
             "title": title,
             "description": description,
             "instructor_id": instructor,
-            "modules": lessons
+            "modules": lessons,
+            "embed_link": link,
+            "student_enrolled": student_enrolled if student_enrolled else []
         }
-        mongo.db.courses.insert_one(course_doc)
-        return Course(_id, title, description, instructor, lessons)
+        return Course(_id, title, description, instructor, lessons, link, student_enrolled)
 
 class Teacher:
     def __init__(self, id, name, email, password_hash=None):

@@ -160,6 +160,10 @@ def logout():
 @main.route('/students')
 def students():
     users = User.get_all_users()
-    
     return render_template('teacher/students.html', students=users)
+
+@main.route('/add-courses')
+def add_courses():
+    
+    return render_template('teacher/upload-course.html')
  

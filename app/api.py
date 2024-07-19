@@ -67,13 +67,20 @@ def add_course_to_user(email=None, course_id=None):
 def create_course():
     data = request.get_json()
     title = data.get('title')
+    print('title', title )
     description = data.get('description')
+    print('description', description)
     instructor = data.get('instructor')
+    print('instructor', instructor)
     lessons = data.get('lessons')
+    print('lessons', lessons)
+    link = data.get('embed_link')
+    print('link', link)
     if not title or not description or not instructor or not lessons:
         return jsonify({'error': 'Missing required fields: title, description, instructor, lessons'}), 400
-    course = Course.create(title, description, instructor, lessons)
-    return jsonify(course), 201
+    course = Course.create(title, description, instructor, lessons, link)
+    course.save()
+    return jsonify({'Message':'course saved success fully'}), 201
 
 
 @api_v1.route('/post_marks', methods=['POST'])
