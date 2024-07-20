@@ -1,7 +1,7 @@
 # Import necessary modules
 from flask import Blueprint, jsonify, request
 from flask_login import login_required
-from app.models import User, Course  # Assuming these are correctly imported
+from app.models import User, Course, Notification
 from app import mongo
 
 # Define the blueprint for API endpoints
@@ -38,7 +38,11 @@ def get_all_users():
     users = User.get_all_users()
     return jsonify(users)
 
-#TODO: add the get_marks_by_user method
+@api_v1.route('/notifications', methods=['GET'])
+def get_notifiactions():
+    notifications = Notification.get_all_notifications()
+    return jsonify(notifications)
+
 
 # POST Methods
 #
@@ -95,3 +99,16 @@ def post_marks():
     User.add_marks_to_user(user_email, course_id, marks)
     return jsonify({'message': 'Marks added successfully.'}), 200
 
+@api_v1.route('/post_notification', methods=['POST'])
+def post_notification():
+    data = request.get_json()
+    print('data', data)
+    title = data.get('title')
+    author = data.get('instructor_name')
+    description = data.get('description')
+    if not title or not author or not description:
+        return jsonify({'error': 'Missing required fields: title, author, description'}), 400
+    notification = Notification.create(title, author, description)
+    print('notification', notification)
+    notification.save()
+    return jsonify({'message': 'Notification added successfully.'}), 200

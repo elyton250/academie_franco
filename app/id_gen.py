@@ -21,5 +21,19 @@ def generate_userID():
     return unique_id
 
 
+def generate_teacherID():
+    """
+    Generates a unique 3-character ID consisting only of uppercase letters.
+    """
+    allowed_chars = string.ascii_uppercase
+    unique_id = ''.join(random.choice(allowed_chars) for _ in range(3))
+    return unique_id
 
-print(generate_userID())
+def generate_notificationID():
+    """
+    Generates a unique 3-character ID consisting only of uppercase letters.
+    """
+    allowed_chars = string.ascii_uppercase
+    unique_id = ''.join(random.choice(allowed_chars) for _ in range(3))
+    return unique_id
+

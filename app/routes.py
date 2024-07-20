@@ -83,6 +83,10 @@ def courses(email=None, course_id=None):
 def liked_courses():
     return render_template('student/liked-course.html')
 
+@main.route('/notification')
+def notification():
+    return render_template('student/notification.html')
+
 
 @main.route('/auth', methods=['GET', 'POST'])
 def register():
@@ -91,17 +95,21 @@ def register():
         name = form.name.data
         email = form.email.data
         password = form.password.data
+        role = form.role.data
         existing_user = User.get_by_email(email)
         if existing_user is None:
-            user = User.create(name, email, password)
+            user = User.create(name, email, password, role)
             login_user(user)
-            return redirect(url_for('main.dashboard'))
+            if role == 'student':
+                return redirect(url_for('main.dashboard'))
+            elif role == 'teacher':
+                return redirect(url_for('main.dashboard_teacher'))
         else:
             flash('A user with that email already exists.')
     login_form = LoginForm()
     flash_messages = get_flashed_messages(with_categories=True)
-    # return render_template('login.html', register_form=form, login_form=login_form)
-    return render_template('auth.html', register_form=form, login_form=form, flash_messages=flash_messages)
+    return render_template('auth.html', register_form=form, login_form=login_form, flash_messages=flash_messages)
+
 
 @main.route('/login', methods=['GET', 'POST'])
 def login():
@@ -109,13 +117,23 @@ def login():
     if form.validate_on_submit():
         user = User.get_by_email(form.email.data)
         if user and user.check_password(form.password.data):
+            user_json = user.user_to_json()
+            print('this is the user json', user_json)          
             login_user(user)
-            return redirect(url_for('main.dashboard'))
+            if user_json['role'] == 'student':
+                print('this is the user role', user.role )
+                return redirect(url_for('main.dashboard'))
+            elif user_json['role'] == 'teacher':
+                print('this is the user role', user.role )
+                return redirect(url_for('main.dashboard_teacher'))
+            elif user_json['role'] == None:
+                flash('Please Sign up')
+            print('after all the checks')
         else:
             flash('Invalid email or password.')
     register_form = RegistrationForm()
     flash_messages = get_flashed_messages(with_categories=True)
-    return render_template('login.html', register_form=register_form, login_form=form, flash_messages=flash_messages)
+    return render_template('auth.html', register_form=register_form, login_form=form, flash_messages=flash_messages)
     # return render_template('login.html', register_form=register_form, login_form=form)
 
 # Google login
@@ -157,6 +175,12 @@ def logout():
 #
 #
 #######
+
+@main.route('/dashboard-teacher')
+@login_required
+def dashboard_teacher():
+    return render_template('teacher/dashboard-teacher.html')
+
 @main.route('/students')
 def students():
     users = User.get_all_users()
@@ -166,4 +190,22 @@ def students():
 def add_courses():
     
     return render_template('teacher/upload-course.html')
+
+@main.route('/send-notification')
+def notify():
+    return render_template('teacher/send-notification.html')
+
+
+##
+#
+#
+###
+@main.route('/settings')
+def settings():
+    current_user = User.get(session['_user_id'])
+    print('this is the current user', current_user)
+    user_json = current_user.user_to_json()
+    role = current_user.marks # the simple fix...
+    return render_template('settings.html', role=role)
+
  

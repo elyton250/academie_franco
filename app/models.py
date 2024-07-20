@@ -3,17 +3,18 @@
 from flask_login import UserMixin
 from app import mongo
 from werkzeug.security import generate_password_hash, check_password_hash
-from app.id_gen import generate_userID, generate_courseID
+from app.id_gen import generate_userID, generate_courseID, generate_notificationID
 import uuid
 
 class User(UserMixin):
-    def __init__(self, id, name, email, password_hash=None, courses_id=None, courses=[], marks=None):
+    def __init__(self, id, name, email, password_hash=None, courses_id=None, courses=[], marks=None, role=None):
         self.id = id
         self.name = name
         self.email = email
         self.password_hash = password_hash
         self.courses = courses_id or []
         self.marks = marks or []
+        self.role = role
 
     @staticmethod
     def get_all_users():
@@ -72,8 +73,7 @@ class User(UserMixin):
     def get(user_id):
         user_doc = mongo.users.find_one({"_id": user_id})
         if user_doc:
-            return User(user_doc["_id"], user_doc["name"], user_doc["email"], user_doc.get("password_hash"))
-        return None
+            return User(user_doc.get("_id"), user_doc.get("name"), user_doc.get("email"), user_doc.get("password_hash"), user_doc.get("courses"),  user_doc.get("marks"), user_doc.get("role"))
 
 
      # this function is used when enrolling a user to a course
@@ -85,11 +85,12 @@ class User(UserMixin):
             return user_doc
         return None
     
+    
     #this function is used to get a user by email in login
     def get_by_email(email):
         user_doc = mongo.users.find_one({"email": email})
         if user_doc:
-            return User(user_doc["_id"], user_doc["name"], user_doc["email"], user_doc["password_hash"])
+            return User(user_doc.get("_id"), user_doc.get("name"), user_doc.get("email"), user_doc.get("password_hash"), user_doc.get("courses"),   user_doc.get("marks"), user_doc.get("role"))
         return None
     
     @staticmethod
@@ -99,7 +100,7 @@ class User(UserMixin):
     
 
     @staticmethod
-    def create(name, email, password):
+    def create(name, email, password, role, courses =[], marks=[]):
         _id = generate_userID()
         password_hash = generate_password_hash(password)
         user_doc = {
@@ -109,12 +110,27 @@ class User(UserMixin):
             "password_hash": password_hash,
             "courses": [],
             "marks": [],
+            "role": role
         }
         mongo.users.insert_one(user_doc)
-        return User(_id, name, email, password_hash)
+        return User(_id, name, email, password_hash, courses=courses, marks=marks, role=role)
 
     def check_password(self, password):
         return check_password_hash(self.password_hash, password)
+    
+    
+    def user_to_json(self):
+        json = {
+            "_id": self.id,
+            "name": self.name,
+            "email": self.email,
+            "courses": self.courses,
+            "marks": self.role, # simple fix correct this 
+            "role": self.marks
+        }
+        print('this is the json', json)
+        return json
+    
  
 # this the course model
 #
@@ -266,4 +282,46 @@ class Teacher:
 
     def check_password(self, password):
         return check_password_hash(self.password_hash, password)
+
+        
+class Notification:
+        def __init__(self, id, title, author, description):
+            self.id = id
+            self.title = title
+            self.author = author
+            self.description = description
+    
+        @staticmethod
+        def get_all_notifications():
+            notifications = []
+            for notification_doc in mongo.notifications.find():
+                notifications.append(notification_doc)
+            return notifications
+    
+        @staticmethod
+        def get_notification(notification_id):
+            notification_doc = mongo.notifications.find_one({"_id": notification_id})
+            if notification_doc:
+                return notification_doc
+            return 'Notification not found'
+    
+        @staticmethod
+        def create(title, author, description):
+            _id = generate_notificationID()
+            notification_doc = {
+                "title": title,
+                "author": author,
+                "description": description
+            }
+            return Notification(_id, title, author, description)
+            
+        def save(self):
+            notification_doc = {
+                "_id": self.id,
+                "title": self.title,
+                "author": self.author,
+                "description": self.description
+            }
+            mongo.notifications.insert_one(notification_doc)
+            return 'notification Addded'
  

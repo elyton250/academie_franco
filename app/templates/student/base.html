@@ -45,13 +45,13 @@
         </a>
       </li>
       <li>
-        <a href="#" class="nav-link" id="notification-tab">
+        <a href="{{ url_for('main.notification') }}" class="nav-link" id="notification-tab">
           <i class='bx bx-pie-chart-alt-2'></i>
           <span class="links_name">Notification</span>
         </a>
       </li>
       <li>
-        <a href="#" class="nav-link" id="setting-tab">
+        <a href="{{ url_for('main.settings') }}" class="nav-link" id="setting-tab">
           <i class='bx bx-cog'></i>
           <span class="links_name">Setting</span>
         </a>
@@ -75,8 +75,7 @@
         <i class='bx bx-search'></i>
       </div>
       <div class="profile-details">
-        <img src="images/profile.jpg" alt="">
-        <span class="admin_name">Profile</span>
+        <span class="admin_name"><a href="">{{ current_user.name }}</a></span>
         <i class='bx bx-chevron-down'></i>
       </div>
     </nav>
@@ -101,5 +100,4 @@
   </script>
 </body>
 <script src="{{ url_for('static', filename='js/dashboard/courses.js') }}"></script>
-<script src="{{ url_for('static', filename='js/page-actions/enroll.js') }}"></script>
 </html>
