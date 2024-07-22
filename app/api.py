@@ -1,8 +1,9 @@
 # Import necessary modules
 from flask import Blueprint, jsonify, request
-from flask_login import login_required
+from flask_login import login_required, current_user
 from app.models import User, Course, Notification
 from app import mongo
+from app.msc_func import add_course_to_user_internal
 
 # Define the blueprint for API endpoints
 api_v1 = Blueprint('api_v1', __name__)
@@ -71,20 +72,24 @@ def add_course_to_user(email=None, course_id=None):
 def create_course():
     data = request.get_json()
     title = data.get('title')
-    print('title', title )
     description = data.get('description')
-    print('description', description)
     instructor = data.get('instructor')
-    print('instructor', instructor)
     lessons = data.get('lessons')
-    print('lessons', lessons)
     link = data.get('embed_link')
-    print('link', link)
+
     if not title or not description or not instructor or not lessons:
         return jsonify({'error': 'Missing required fields: title, description, instructor, lessons'}), 400
     course = Course.create(title, description, instructor, lessons, link)
+    course_id = course.id
+    print('course_id', course_id)
+    
+    add_course_to_user_internal(current_user.email, course.id)
+    print('course added to user')
+    
     course.save()
     return jsonify({'Message':'course saved success fully'}), 201
+
+
 
 
 @api_v1.route('/post_marks', methods=['POST'])

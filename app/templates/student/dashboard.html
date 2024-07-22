@@ -1,34 +1,30 @@
 {%extends 'student/base.html' %}
-{%block content%}
-    <div class="card"  id="big-table">
-        <div class="card-header">
+{%eblock content%}
             <h3>Learning Summary</h3>
-        </div>
-        <div class="card-body">
             <p>Welcome {{ name }}</p>
             {% if courses %}
                 <h3>Enrolled courses</h3>
-                <table class="table" table id="myTable">
+
+                <table class="table">
                     <thead>
                       <tr>
                         <th scope="col">Course Name</th>
-                        <th scope="col">Course <br> Description</th>
+                        <th scope="col">Course Description</th>
                         <th scope="col">Course ID</th>
                         <th scope="col">Action</th>
                       </tr>
                     </thead>
                     <tbody>
-                        {% for course in courses %}
-                        <tr>
-                            <td>{{ course.title }}</td>
-                            <td>{{course.description}}</td>
-                            <td>{{course._id}}</td>
-                            <td id="view-button"><a href="{{ url_for('main.learning') }}" onclick="storeCourseDetails('{{ course.title }}', '{{ course.description }}', '{{ course._id }}', '{{ course.src }}', '{{ user_email }}')">View</a></td>
-                        </tr>
-                        {% endfor %}
+                    {% for course in courses %}
+                      <tr>
+                        <th scope="row">{{ course.title }}</th>
+                        <td>{{course.description}}</td>
+                        <td>{{course._id}}</td>
+                        <td id="view-button"><a href="{{ url_for('main.learning') }}" onclick="storeCourseDetails('{{ course.title }}', '{{ course.description }}', '{{ course._id }}', '{{ course.src }}', '{{ user_email }}')">View</a></td>
+                      </tr>
+                    {% endfor %}
                     </tbody>
-                </table>
-
+                  </table>
 
                 <!-- for student marks -->
                 {% if courses_marks %}

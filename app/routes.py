@@ -166,7 +166,7 @@ def logout():
 ####
 
 #
-#####
+######
 #
 #
 #
@@ -184,7 +184,16 @@ def dashboard_teacher():
 @main.route('/students')
 def students():
     users = User.get_all_users()
-    return render_template('teacher/students.html', students=users)
+    for user in users:
+        if user['email'] == current_user.email:
+            user_info = user
+        user_courses = user_info['courses']
+        courses = []
+        for course in user_courses:
+            course = Course.get_course(course)
+            courses.append(course)
+        print('this is the courses', courses)
+    return render_template('teacher/students.html',user_courses=courses)
 
 @main.route('/add-courses')
 def add_courses():

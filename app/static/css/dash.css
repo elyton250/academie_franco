@@ -7,10 +7,10 @@
   font-family: 'Poppins', sans-serif;
 }
 
-#big-table{
+#table{
   /* border: 1px solid red; */
   margin-right: 50px;
-
+  border: red solid 1px;
 
 }
 

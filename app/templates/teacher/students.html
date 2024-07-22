@@ -5,33 +5,27 @@
     <h1>Welcome, Teacher!</h1>
     <p>This is your dashboard where you can manage your classes, view student progress, and more.</p>
 
+    {% if user_courses %}
+
     <table class="table">
+      {% for course in user_courses %}
         <thead>
           <tr>
-            <th scope="col">#</th>
-            <th scope="col">First</th>
-            <th scope="col">Last</th>
-            <th scope="col">Handle</th>
+            <th scope="col">Course ID</th>
+            <th scope="col">Course Description</th>
+            <th scope="col">Course Name</th>
           </tr>
         </thead>
         <tbody>
           <tr>
-            <th scope="row">1</th>
-            <td>Mark</td>
-            <td>Otto</td>
-            <td>@mdo</td>
+            <th>{{ course._id }}</th>
+            <td>{{ course.description }}</td>
+            <td>{{ course.title }}</td>
           </tr>
-          <tr>
-            <th scope="row">2</th>
-            <td>Jacob</td>
-            <td>Thornton</td>
-            <td>@fat</td>
-          </tr>
-          <tr>
-            <th scope="row">3</th>
-            <td colspan="2">Larry the Bird</td>
-            <td>@twitter</td>
-          </tr>
+      {% endfor %}
         </tbody>
+    {% else %}
+      <p>You have not created to any courses. Click on the new courses tab to upload a course.</p>
+    {% endif %}
       </table>
 {% endblock %}
