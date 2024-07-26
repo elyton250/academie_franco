@@ -2,35 +2,42 @@
 {% block content %}
     <h1>Welcome, Teacher!</h1>
     <p>This is your dashboard where you can manage your classes, view student progress, and more.</p>
-      <table class="table">
-        <div  id="table">
-          <thead>
-            <tr>
-              <th scope="col">#</th>
-              <th scope="col">First</th>
-              <th scope="col">Last</th>
-              <th scope="col">Handle</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr>
-              <th scope="row">1</th>
-              <td>Mark</td>
-              <td>Otto</td>
-              <td>@mdo</td>
-            </tr>
-            <tr>
-              <th scope="row">2</th>
-              <td>Jacob</td>
-              <td>Thornton</td>
-              <td>@fat</td>
-            </tr>
-            <tr>
-              <th scope="row">3</th>
-              <td colspan="2">Larry the Bird</td>
-              <td>@twitter</td>
-            </tr>
-          </tbody>
-        </div>
+    {% if my_students %}
+        <table class="table" style="width: 60%;">
+            <div id="table">
+                <thead>
+                    <tr>
+                        <th scope="col" style="width: 25%;">Student ID</th>
+                        <th scope="col" style="width: 25%;">Student Full Name</th>
+                        <th scope="col" style="width: 25%;">Course Taken</th>
+                        <th scope="col" style="width: 25%;">Marks</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for my_student in my_students %}
+                        <tr>
+                            <th scope="row">{{ my_student._id }}</th>
+                            <td>{{ my_student.name }}</td>
+                            <td>
+                                {% for course_name in course_names %}
+                                    {% if course_name._id in my_student.courses %}
+                                        {{ course_name.title }}
+                                    {% endif %}
+                                {% endfor %}
+                            </td>
+                            <td>
+                                {% for course_name in course_names %}
+                                    {% if course_name._id in my_student.courses %}
+                                        {{ course_name.marks }}
+                                    {% endif %}
+                                {% endfor %}
+                            </td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </div>
         </table>
+    {% else %}
+        <p>You have no students yet.</p>
+    {% endif %}
 {% endblock %}

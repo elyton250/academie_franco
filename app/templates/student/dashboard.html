@@ -1,11 +1,11 @@
 {%extends 'student/base.html' %}
-{%eblock content%}
+{%block content%}
             <h3>Learning Summary</h3>
             <p>Welcome {{ name }}</p>
             {% if courses %}
                 <h3>Enrolled courses</h3>
 
-                <table class="table">
+                <table class="table" style="width: 60%;">
                     <thead>
                       <tr>
                         <th scope="col">Course Name</th>
@@ -20,7 +20,7 @@
                         <th scope="row">{{ course.title }}</th>
                         <td>{{course.description}}</td>
                         <td>{{course._id}}</td>
-                        <td id="view-button"><a href="{{ url_for('main.learning') }}" onclick="storeCourseDetails('{{ course.title }}', '{{ course.description }}', '{{ course._id }}', '{{ course.src }}', '{{ user_email }}')">View</a></td>
+                        <td><a href="{{ url_for('main.learning') }}" onclick="storeCourseDetails('{{ course.title }}', '{{ course.description }}', '{{ course._id }}', '{{ course.src }}', '{{ user_email }}')">View</a></td>
                       </tr>
                     {% endfor %}
                     </tbody>
@@ -29,7 +29,7 @@
                 <!-- for student marks -->
                 {% if courses_marks %}
                 <h3>Test Results</h3>
-                <table class="table" table id="myTable">
+                <table class="table" table id="myTable" style="width: 60%;">
                     <thead>
                       <tr>
                         <th scope="col">Course Name</th>

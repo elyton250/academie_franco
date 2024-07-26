@@ -7,11 +7,14 @@
   font-family: 'Poppins', sans-serif;
 }
 
+.home-content {
+  margin-right: 50px;
+  justify-content: center;
+  justify-items: center;
+}
 #table{
   /* border: 1px solid red; */
   margin-right: 50px;
-  border: red solid 1px;
-
 }
 
 /* 

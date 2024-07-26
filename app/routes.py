@@ -179,7 +179,27 @@ def logout():
 @main.route('/dashboard-teacher')
 @login_required
 def dashboard_teacher():
-    return render_template('teacher/dashboard-teacher.html')
+    all_students = User.get_all_users()
+    my_courses = User.get_user_courses(current_user.email)
+
+    course_names = []
+    for course in my_courses:
+        course = Course.get_course(course)
+        course_names.append(course)
+        
+        
+    my_students = []
+    for student in all_students:
+        if student['role'] == 'student':
+            for course in student['courses']:
+                if course in my_courses:
+                    my_students.append(student)
+                    break
+    
+    print('COURSE NAMES', course_names)
+
+    return render_template('teacher/dashboard-teacher.html', my_students=my_students, course_names=course_names)
+
 
 @main.route('/students')
 def students():
